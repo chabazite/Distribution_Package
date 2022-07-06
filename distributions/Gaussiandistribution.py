@@ -1,9 +1,8 @@
 import math
-from unittest import result
 import matplotlib.pyplot as plt
 from .Generaldistribution import Distribution
 
-class Guassian(Distribution):
+class Gaussian(Distribution):
     '''
     Gaussian distribution class for calculating and vissualizing a Gaussian distribution. Takes attributes from general distribution.
     
@@ -163,4 +162,3 @@ class Guassian(Distribution):
         '''
 
         return "mean {}, standard deviation {}",format(self.mean, self.stdev)
-        
