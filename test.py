@@ -22,14 +22,14 @@ class TestGaussianClass(unittest.TestCase):
     
     def test_stdevcalculation(self):
         self.assertEqual(round(self.gaussian.calculate_stdev(), 2), 92.87, 'sample standard deviation incorrect')
-        self.assertEqual(round(self.gaussian.calculate_stdev(), 2), 88.55, 'population standard deviation incorrect')
+        self.assertEqual(round(self.gaussian.calculate_stdev(sample=False), 2), 88.55, 'population standard deviation incorrect')
     
     def test_pdf(self):
         self.assertEqual(round(self.gaussian.pdf(25), 5), 0.19947,\
             'pdf function after calculating mean and stdev does not give expected result')
 
     def test_add(self):
-        gaussian_one = Gaussian(25,2)
+        gaussian_one = Gaussian(25,3)
         gaussian_two = Gaussian(30,4)
         gaussian_sum = gaussian_one + gaussian_two
 
@@ -54,7 +54,7 @@ class TestBinomialClass(unittest.TestCase):
         self.assertEqual(mean, 8)
 
     def test_calculatestdev(self):
-        stdev = self.binomial.calcuate_stdev()
+        stdev = self.binomial.calculate_stdev()
         self.assertEqual(round(stdev, 2), 2.19)
     
     def test_replace_stats_with_data(self):

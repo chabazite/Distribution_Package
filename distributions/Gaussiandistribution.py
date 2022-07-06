@@ -27,7 +27,7 @@ class Gaussian(Distribution):
         Returns:
             float: mean of the dataset
         ''' 
-        avg = sum(self.data)/len(self.data)
+        avg = sum(self.data) / len(self.data)
 
         self.mean = avg
 
@@ -45,7 +45,7 @@ class Gaussian(Distribution):
         '''
 
         if sample:
-            n = len(self.data)-1
+            n = len(self.data) - 1
         else:
             n = len(self.data)
 

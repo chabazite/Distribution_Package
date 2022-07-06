@@ -14,13 +14,16 @@ class Binomial(Distribution):
         p (float) representing the probability of an event occurring
                 
     """
-    def __init__(self, mu = 0, sigma = 0, p=0, n=1):
+    def __init__(self, prob=0.5, size=20):
 
-        Distribution.__init__(self, mu, sigma)
-        self.p = p
-        self.n = n
+        self.p = prob
+        self.n = size
 
-    def calcuate_mean(self):
+        Distribution.__init__(self, self.calculate_mean(), 
+                                    self.calculate_stdev())
+        
+
+    def calculate_mean(self):
         """
         Function to calculate the mean from p and n
         
@@ -30,9 +33,7 @@ class Binomial(Distribution):
         Returns: 
             float: mean of the data set
         """
-        avg = self.p * self.n
-
-        self.mean = avg
+        self.mean  = self.p * self.n
 
         return self.mean
     
@@ -47,10 +48,8 @@ class Binomial(Distribution):
             float: standard deviation of the data set
     
         """
-        sigma = math.sqrt(self.n * self.p *(1 - self.p))
+        self.stdev = math.sqrt(self.n * self.p *(1 - self.p))
         
-        self.stdev = sigma
-
         return self.stdev
     
     def replace_stats_with_data(self):
@@ -66,12 +65,12 @@ class Binomial(Distribution):
     
         """       
         self.n = len(self.data)
-        self.p = sum(self.data)/ self.n
+        self.p = sum(self.data) / self.n
 
-        self.calculate_mean()
-        self.calculate_stdev()
+        self.mean = self.calculate_mean()
+        self.stdev = self.calculate_stdev()
 
-        return self.p,  self.n
+        return self.p, self.n
 
     def plot_bar(self):
         """
@@ -84,10 +83,11 @@ class Binomial(Distribution):
         Returns:
             None
         """       
-        plt.hist(self.data)
-        plt.title('Histogram of Data')
+        plt.bar(x = ['0', '1'], height = [(1 - self.p) * self.n, 
+                self.p * self.n])
+        plt.title('Bar Chart of Data')
         plt.ylabel('count')
-        plt.xlabe('data')
+        plt.xlabel('data')
 
     def pdf(self, k):
         """Probability density function calculator for the binomial distribution.
@@ -99,11 +99,12 @@ class Binomial(Distribution):
         Returns:
             float: probability density function output
         """
+        a =  math.factorial(self.n) / (math.factorial(k) * \
+            (math.factorial(self.n - k)))
+        b = (self.p **k) * (1 - self.p) ** (self.n - k)
+        return a * b
 
-        return (1.0 / (self.stdev * math.sqrt(2*math.pi))) * \
-            math.exp(-0.5*((k - self.mean) / self.stdev) ** 2)
-    
-    def plot_histogram_pdf(self, n_spaces = 50):
+    def plot_bar_pdf(self):
         """
         Function to plot the pdf of the binomial distribution
         
@@ -114,32 +115,20 @@ class Binomial(Distribution):
             list: x values for the pdf plot
             list: y values for the pdf plot    
         """
-        min_range = min(self.data)
-        max_range = max(self.data)
-		
-		# calculates the interval between x values
-        interval = 1.0 * (max_range - min_range) / n_spaces
-        
+       
         x = []
         y = []
 		
 		# calculate the x values to visualize
-        for i in range(n_spaces):
-            tmp = min_range + interval*i
-            x.append(tmp)
-            y.append(self.pdf(tmp))
+        for i in range(self.n + 1):
+            x.append(i)
+            y.append(self.pdf(i))
 
 		# make the plots
-        fig, axes = plt.subplots(2,sharex=True)
-        fig.subplots_adjust(hspace=.5)
-        axes[0].hist(self.data, density=True)
-        axes[0].set_title('Normed Histogram of Data')
-        axes[0].set_ylabel('Density')
-        
-        axes[1].plot(x, y)
-        axes[1].set_title('Normal Distribution for \n Sample Mean and Sample Standard Deviation')
-        axes[0].set_ylabel('Density')
-        plt.show()
+        plt.bar(x, y)
+        plt.title('Distribution of Outcomes')
+        plt.ylabel('Probability')
+        plt.xlabel('Outcome')
         
         return x, y
 
@@ -162,6 +151,8 @@ class Binomial(Distribution):
         result = Binomial()
         result.p = self.p
         result.n = self.n + other.n
+        result.calculate_mean()
+        result.calculate_stdev()
 
         return result
 
@@ -175,6 +166,7 @@ class Binomial(Distribution):
         Returns:
             string: characteristics of the Binomial object
         """ 
-        return 'mean: {}, standard deviation: {}'.format(self.mean, self.stdev)
+        return 'mean: {}, standard deviation: {}, p {}, n {}'.\
+            format(self.mean, self.stdev, self.p, self.n)
 
 
